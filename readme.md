@@ -1,40 +1,50 @@
 # tModLoader配方处理脚本
 
 ## 概述
-本项目的上游为RecipeReader mod，下游为
-本项目用于更新和处理配方数据。程序会加载旧的配方数据（`old_recipes.xlsx`）和新的配方数据（`new_recipes.json`），合并后生成压平的行数据及倒排索引，并将结果写入 CSV 文件。
+- 本项目从tModLoader中动态（运行时）提取配方数据，本地处理配方数据，并生成为xlsx表格（灰机wiki的MongoDB所使用的数据库所支持的类型）
+- 本项目**没有**包括从数据库中提取数据并生成html样式所需的模块和模板，也无意写这部分内容（俗称摸了）
+- 本项目**没有**包括批量修改合成表模板的相关脚本，但如果你对此感兴趣，可以看看[这个C#项目](https://github.com/riiiiiiin/MWEditor)，其中包含笔者的一些早期工作（不保证work）
 
-## 文件说明
-- **Main.py**  
-  主入口程序，负责数据加载、合并和输出。参见 [Main.py](d:/CalWiki/Recipe/Main.py)。
-- **ParseFromExcel.py**  
-  提供 [`load_recipes_from_xlsx`](d:/CalWiki/Recipe/ParseFromExcel.py) 函数，用于从 Excel 文件中加载旧数据。
-- **ParseFromJson.py**  
-  提供 [`load_recipes_from_json`](d:/CalWiki/Recipe/ParseFromJson.py) 函数，用于从 JSON 文件中加载新数据。
-- **WriteOutput.py**  
-  提供 [`write_xlsx_files`](d:/CalWiki/Recipe/WriteOutput.py) 函数，用于将处理结果写出为 CSV 文件。
-- **DataStructures.py**  
-  定义项目中所使用的数据结构和模型。
+## 文件结构
+- `RecipeReader.tmod` 用于动态提取配方数据
+  - 这个mod支持从配置选项指定的目标mod读取数据，默认为`CalamityMod`
+- `Source/` 处理数据，生成表格
+- `Data/` 待处理的新旧数据
+- `Output` 生成的xlsx数据
+
+## 输出结构概述：下游编写者必读
+- 输出结构的主要思想是压平+倒排索引
+- `recipes.xlsx` 为压平的配方数据，包含4个列：
+  - `workstations` 为工作站列表，使用英文分号`;`分割
+  - `conditions` 为条件列表，使用英文分号`;`分割
+  - `result` 为生成物，结构为物品名`:`数量（英文冒号）
+  - `ingredients` 为成分（中文苦手）列表，每个项结构为物品名`:`数量，项之间使用英文分号`;`分割（英文冒号）
+- `recipes_ws_index.xlsx` 为工作站倒排索引，包含两个列
+  - `workstation` 为工作站名称
+  - `row_indices` 为需求该工作站的所有配方的索引的列表，使用英文分号`;`分割
+    - Hint:在灰机的MongoDB数据库中，每一行都可以通过`filename.xlsx#i`的方式提取出来
+- `recipes_ingredient_index.xlsx` 为成分倒排索引，包含两个列
+  - `ingredient` 为工作站名称
+  - `row_indices` 为需求该成分的所有配方的索引的列表，使用英文分号`;`分割
 
 ## 使用方法
-1. 将数据文件 `old_recipes.xlsx` 和 `new_recipes.json` 放置于工程根目录下。如果 `old_recipes.xlsx` 不存在，程序会使用空集合作为旧数据进行处理。
-2. 打开终端，在项目目录下运行以下命令：
+1. 从灰机下载旧版本的数据，重命名为`old_recipes.xlsx`，放置在`Data/`文件夹下
+   - 如果文件夹还不存在，请自己创建
+   - 如果还没有数据，这一步可以省略
+2. 将`RecipeReader.tmod`放在`tModLoader/Mod`文件夹下并加载，将`tModLoader`下的`RecipeReaderOutput.json`重命名为`new_recipes.json`，放置在`Data/`文件夹下
+   - 读取数据的时机为加载，请在加载完成后查找输出文件
+   - 如果修改了配置或者需要重新生成，请重新加载
+3. 打开终端，在项目目录下运行以下命令：
     ```sh
+    cd Source
     python Main.py
     ```
-3. 程序执行完毕后，会生成三个 CSV 文件，并在终端打印“数据处理完成，文件已保存。”
+    - 当然，我假定你在使用Windows，如果你在使用Linux或MaxOS，你最好自己会
+4. 程序执行完毕后，会在`Output/`下生成三个 CSV 文件，终端也会提示“数据处理完成，文件已保存。”
 
 ## 依赖
 - Python 3.x
-- 可能需要安装第三方库（例如处理 Excel 的库），请参考 `ParseFromExcel.py` 中的依赖说明。
-
-## 错误处理
-- 加载 `old_recipes.xlsx` 时，如文件不存在或读取失败，程序会输出错误提示并默认使用空集合。
-- 其他异常情况均已在代码中捕获，确保程序不会异常终止。
-
-## 注意事项
-- 请确保数据文件格式与解析函数的预期一致，以免数据解析错误。
-- 函数的详细实现请参见各自文件：[ParseFromExcel.py](d:/CalWiki/Recipe/ParseFromExcel.py)、[ParseFromJson.py](d:/CalWiki/Recipe/ParseFromJson.py) 和 [WriteOutput.py](d:/CalWiki/Recipe/WriteOutput.py)。
-
-## 联系方式
-如有疑问或建议，请联系项目维护者。
+- `openpyxl`
+    ```sh
+    pip install openpyxl
+    ```

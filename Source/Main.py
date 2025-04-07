@@ -28,6 +28,6 @@ if __name__ == "__main__":
     flat_rows, ws_index, ing_index = process_recipes(combined_recipes)
     
     # 写入三个 CSV 文件
-    write_xlsx_files(flat_rows, ws_index, ing_index)
+    write_xlsx_files(flat_rows, ws_index, ing_index, "../Output/recipes.xlsx", "../Output/recipes_ws_index.xlsx", "../Output/recipes_ing_index.xlsx")
     
     print("数据处理完成，文件已保存。")

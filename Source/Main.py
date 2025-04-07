@@ -6,8 +6,8 @@ import os
 # 示例使用：
 if __name__ == "__main__":
     # 假设 "old_recipes.xlsx" 和 "new_recipes.json" 分别保存了旧集合和新集合数据
-    old_recipes_file = "old_recipes.xlsx"
-    new_recipes_file = "new_recipes.json"
+    old_recipes_file = "../Data/old_recipes.xlsx"
+    new_recipes_file = "../Data/new_recipes.json"
     
     # 尝试加载旧数据，如果文件不存在或加载失败，则使用空集合
     try:

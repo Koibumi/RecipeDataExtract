@@ -26,12 +26,15 @@
 - `recipes_ingredient_index.xlsx` 为成分倒排索引，包含两个列
   - `ingredient` 为工作站名称
   - `row_indices` 为需求该成分的所有配方的索引的列表，使用英文分号`;`分割
+- 注：对于配方组的处理方式
+  - 在配方数据中，使用配方组名称，不会细分为多个配方
+  - 在倒排中，同时存在配方组名称和配方成员名称
 
 ## 使用方法
 1. 从灰机下载旧版本的数据，重命名为`old_recipes.xlsx`，放置在`Data/`文件夹下
    - 如果文件夹还不存在，请自己创建
    - 如果还没有数据，这一步可以省略
-2. 将`RecipeReader.tmod`放在`tModLoader/Mod`文件夹下并加载，将`tModLoader`下的`RecipeReaderOutput.json`重命名为`new_recipes.json`，放置在`Data/`文件夹下
+2. 将`RecipeReader.tmod`放在`tModLoader/Mod`文件夹下并加载，将`tModLoader`下的`Recipes.json`重命名为`new_recipes.json`，`Groups.json`重命名为`groups.json`，放置在`Data/`文件夹下
    - 读取数据的时机为加载，请在加载完成后查找输出文件
    - 如果修改了配置或者需要重新生成，请重新加载
 3. 打开终端，在项目目录下运行以下命令：

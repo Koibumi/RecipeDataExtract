@@ -32,9 +32,7 @@ def flatten_recipe(recipe: RecipeView) -> List[str]:
     ingredients_str = ";".join(f"{ing.item}:{ing.quantity}" for ing in recipe.ingredients)
     return [workstations_str, conditions_str, result_str, ingredients_str, recipe.version]
 
-def process_recipes(recipes_set: Set[RecipeView],
-                    groups: Set[GroupView]
-                   ) -> Tuple[List[List[str]], dict, dict]:
+def process_recipes(recipes_set: Set[RecipeView]) -> List[List[str]]:
     """
     处理 RecipeView 对象集合：
       1. 将集合转换为列表，并对每个对象调用 flatten_recipe 得到 CSV 行（列表形式）；
@@ -47,23 +45,9 @@ def process_recipes(recipes_set: Set[RecipeView],
     """
     recipes_list = list(recipes_set)
     flat_rows = []
-    workstation_index = {}  # workstation_name -> list of row indices
-    ingredient_index = {}   # ingredient_name -> list of row indices
         
     for idx, recipe in enumerate(recipes_list):
         row = flatten_recipe(recipe)
         flat_rows.append(row)
-        
-        for ws in recipe.workstations:
-            workstation_index.setdefault(ws, []).append(idx)
-        for ing in recipe.ingredients:
-            # 正常倒排
-            ingredient_index.setdefault(ing.item, []).append(idx)
-            # 若该 ingredient 的 name 等于某个 GroupView 的 name，
-            # 则将当前 RecipeView 的索引也加入该组中每个成员的倒排中
-            for group in groups:
-                if ing.item == group.name:
-                    for member in group.items:
-                        ingredient_index.setdefault(member.item, []).append(idx)
-    
-    return flat_rows, workstation_index, ingredient_index
+
+    return flat_rows

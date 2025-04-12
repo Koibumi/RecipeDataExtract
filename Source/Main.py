@@ -37,9 +37,9 @@ if __name__ == "__main__":
     combined_recipes = update_recipes(old_recipes, new_recipes)
     
     # 处理 RecipeView 集合，得到压平后的行和倒排索引
-    flat_rows, ws_index, ing_index = process_recipes(combined_recipes, groups)
+    flat_rows = process_recipes(combined_recipes)
     
     # 写入三个 CSV 文件
-    write_xlsx_files(flat_rows, ws_index, ing_index, "../Output/recipes.xlsx", "../Output/recipes_ws_index.xlsx", "../Output/recipes_ing_index.xlsx")
+    write_xlsx_files(flat_rows, "../Output/recipes.xlsx")
     
     print("数据处理完成，文件已保存。")

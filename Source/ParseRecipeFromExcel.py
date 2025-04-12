@@ -52,7 +52,7 @@ def load_recipes_from_xlsx(file_path: str) -> List[RecipeView]:
     """
     recipes = []
     wb = load_workbook(file_path)
-    sheet = wb.active  # 默认读取第一个工作表
+    sheet = wb['data']  # 读取 'data' 工作表
 
     # 获取表头
     headers = [cell.value for cell in sheet[1]]

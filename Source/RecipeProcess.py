@@ -35,18 +35,14 @@ def flatten_recipe(recipe: RecipeView) -> List[str]:
 def process_recipes(recipes_set: Set[RecipeView]) -> List[List[str]]:
     """
     处理 RecipeView 对象集合：
-      1. 将集合转换为列表，并对每个对象调用 flatten_recipe 得到 CSV 行（列表形式）；
-      2. 为 workstations 和 ingredients 分别建立倒排索引，
-         键为名称，值为包含该名称的 RecipeView 对象在列表中的 index 列表。
+      将集合转换为列表，并对每个对象调用 flatten_recipe 得到 CSV 行（列表形式）
     返回：
-      - flat_rows: 二维列表，每个子列表为一行 CSV 数据；
-      - workstation_index: {workstation_name: [index, ...]} 倒排索引；
-      - ingredient_index: {ingredient_name: [index, ...]} 倒排索引。
+      - flat_rows: 二维列表，每个子列表为一行 CSV 数据
     """
     recipes_list = list(recipes_set)
     flat_rows = []
         
-    for idx, recipe in enumerate(recipes_list):
+    for recipe in recipes_list:
         row = flatten_recipe(recipe)
         flat_rows.append(row)
 

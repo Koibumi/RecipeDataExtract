@@ -29,17 +29,19 @@ if __name__ == "__main__":
             groups = load_groups_from_json(groups_file)
         else:
             print(f"{groups_file} 不存在，使用空集合")
-            groups = set()
+            groups = []
     except Exception as e:
         print(f"加载 {groups_file} 失败，错误信息：{e}，使用空集合")
-        groups = set()
+        groups = []
         
     combined_recipes = update_recipes(old_recipes, new_recipes)
     
-    # 处理 RecipeView 集合，得到压平后的行和倒排索引
-    flat_rows = process_recipes(combined_recipes)
+    # 处理 RecipeView 集合
+    flat_rows_recipes = process_recipes(combined_recipes)
+    write_flattened_recipes(flat_rows_recipes, "../Output/recipes.xlsx")
     
-    # 写入三个 CSV 文件
-    write_xlsx_files(flat_rows, "../Output/recipes.xlsx")
+    # 处理 GroupView 列表
+    flat_rows_groups = process_groups(groups)
+    write_flattened_groups(flat_rows_groups, "../Output/groups.xlsx")
     
     print("数据处理完成，文件已保存。")

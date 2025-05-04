@@ -26,7 +26,7 @@ def flatten_recipe(recipe: RecipeView) -> List[str]:
       - ingredients: 对于 ingredients 中的每个 ItemView，以 "item:quantity" 格式表示，使用分号拼接
       - version: 原始 version 字段
     """
-    workstations_str = ";".join(recipe.workstations)
+    workstations_str = ";".join(recipe.workstations) if recipe.workstations else "徒手"
     conditions_str = ";".join(recipe.conditions)
     result_str = f"{recipe.result.item}:{recipe.result.quantity}" if recipe.result else ""
     ingredients_str = ";".join(f"{ing.item}:{ing.quantity}" for ing in recipe.ingredients)
